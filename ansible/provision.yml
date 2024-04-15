@@ -1,0 +1,21 @@
+- name: RPMmaker
+  hosts: all
+  become: yes
+  tasks:
+
+  - name: fix repos
+    shell: cd /etc/yum.repos.d/ && sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+    when: ansible_os_family == "RedHat"
+
+  - name: install base tools
+    dnf:
+      name:
+        - redhat-lsb-core
+        - wget
+        - rpmdevtools
+        - rpm-build
+        - createrepo
+        - yum-utils
+        - gcc       
+      state: present
+      update_cache: true
